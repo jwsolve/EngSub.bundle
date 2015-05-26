@@ -37,7 +37,7 @@ def MainMenu():
 
 	oc = ObjectContainer()
 	page = HTML.ElementFromURL(BASE_URL)
-	for each in page.xpath("//ul[@class='sub-menu']/li[contains(@class,'category')]"):
+	for each in page.xpath("//ul[@class='sub-menu']/li[contains(@class,'taxonomy')]"):
 		title = each.xpath("./a/text()")[0]
 		category = each.xpath("./a/@href")[0]
 		oc.add(DirectoryObject(
@@ -46,7 +46,6 @@ def MainMenu():
 			thumb = R(ICON_LIST)
 			)
 		)
-
 	return oc
 
 ######################################################################################
