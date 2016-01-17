@@ -37,15 +37,18 @@ def MainMenu():
 
 	oc = ObjectContainer()
 	page = HTML.ElementFromURL(BASE_URL)
-	for each in page.xpath("//ul[@class='sub-menu']/li[contains(@class,'taxonomy')]"):
-		title = each.xpath("./a/text()")[0]
-		category = each.xpath("./a/@href")[0]
-		oc.add(DirectoryObject(
-			key = Callback(ShowCategory, title = title, category = category, page_count = 1),
-			title = title,
-			thumb = R(ICON_LIST)
+	for each in page.xpath("//ul[@class='sub-menu']/li[contains(@class,'menu-item')]"):
+		try:
+			title = each.xpath("./a/text()")[0]
+			category = each.xpath("./a/@href")[0]
+			oc.add(DirectoryObject(
+				key = Callback(ShowCategory, title = title, category = category, page_count = 1),
+				title = title,
+				thumb = R(ICON_LIST)
+				)
 			)
-		)
+		except:
+			pass
 	return oc
 
 ######################################################################################

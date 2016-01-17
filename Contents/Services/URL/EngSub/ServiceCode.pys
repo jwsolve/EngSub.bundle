@@ -48,7 +48,7 @@ def PlayVideo(url, fmt):
 	
 	page = HTML.ElementFromURL(url)
 	videolink = page.xpath("//a[@class='btn-watch']/@href")[0]
-	html = HTML.ElementFromURL(videolink)
-	video_source = html.xpath("//source/@src")[0]
+	html = HTTP.Request(videolink, cacheTime = CACHE_1MONTH).content
+	video_url = Regex('file:\s"([^"]+)"').search(html).groups()[0]
 
-	return IndirectResponse(VideoClipObject, key=video_source)
+	return IndirectResponse(VideoClipObject, key=video_url)
