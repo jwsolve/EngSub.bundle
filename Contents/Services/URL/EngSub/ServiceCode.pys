@@ -1,3 +1,14 @@
+import os,sys
+
+try:
+	path = os.getcwd().split("?\\")[1].split('Plug-in Support')[0]+"Plug-ins\EngSub.bundle\Contents\Services\URL\EngSub\Modules"
+except:
+	path = os.getcwd().split("Plug-in Support")[0]+"Plug-ins/EngSub.bundle/Contents/Services/URL/EngSub/Modules"
+if path not in sys.path:
+	sys.path.append(path)
+
+from aadecode import AADecoder
+
 ########################################################################################
 def NormalizeURL(url):
 
@@ -48,7 +59,15 @@ def PlayVideo(url, fmt):
 	
 	page = HTML.ElementFromURL(url)
 	videolink = page.xpath("//a[@class='btn-watch']/@href")[0]
-	html = HTTP.Request(videolink, cacheTime = CACHE_1MONTH).content
-	video_url = Regex('file:\s"([^"]+)"').search(html).groups()[0]
+	try:
+		pagecontent = HTML.ElementFromURL(videolink)
+		iframe_url = pagecontent.xpath("//iframe/@src")[0]
+		loadframe = HTML.ElementFromURL(iframe_url)
+		aascript = loadframe.xpath("//script/text()")[4]
+		string = AADecoder(str(aascript)).decode()
+		video_url = string.replace('window.vr ="','',1).replace('";window.vt ="video/mp4" ;','',1)
+	except:
+		html = HTTP.Request(videolink, cacheTime = CACHE_1MONTH).content
+		video_url = Regex('file:\s"([^"]+)"').search(html).groups()[0]
 
 	return IndirectResponse(VideoClipObject, key=video_url)
